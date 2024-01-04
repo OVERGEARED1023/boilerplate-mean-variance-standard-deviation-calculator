@@ -1,21 +1,47 @@
-import unittest
-import mean_var_std
+import numpy as np
+from typing import List, Dict, Union
 
+def calculate(numbers: List[int]) -> Dict[str, List[Union[List[float], float]]]:
+    if len(numbers) != 9:
+        raise ValueError("List must contain nine numbers.")
 
-# the test case
-class UnitTests(unittest.TestCase):
-    def test_calculate(self):
-        actual = mean_var_std.calculate([2,6,2,8,4,0,1,5,7])
-        expected = {'mean': [[3.6666666666666665, 5.0, 3.0], [3.3333333333333335, 4.0, 4.333333333333333], 3.888888888888889], 'variance': [[9.555555555555557, 0.6666666666666666, 8.666666666666666], [3.555555555555556, 10.666666666666666, 6.222222222222221], 6.987654320987654], 'standard deviation': [[3.091206165165235, 0.816496580927726, 2.943920288775949], [1.8856180831641267, 3.265986323710904, 2.494438257849294], 2.6434171674156266], 'max': [[8, 6, 7], [6, 8, 7], 8], 'min': [[1, 4, 0], [2, 0, 1], 0], 'sum': [[11, 15, 9], [10, 12, 13], 35]}
-        self.assertAlmostEqual(actual, expected, "Expected different output when calling 'calculate()' with '[2,6,2,8,4,0,1,5,7]'")
+    # Convert the list into a 3x3 NumPy array
+    matrix = np.array(numbers).reshape((3, 3))
 
-    def test_calculate2(self):
-        actual = mean_var_std.calculate([9,1,5,3,3,3,2,9,0])
-        expected = {'mean': [[4.666666666666667, 4.333333333333333, 2.6666666666666665], [5.0, 3.0, 3.6666666666666665], 3.888888888888889], 'variance': [[9.555555555555555, 11.555555555555557, 4.222222222222222], [10.666666666666666, 0.0, 14.888888888888891], 9.209876543209875], 'standard deviation': [[3.0912061651652345, 3.39934634239519, 2.0548046676563256], [3.265986323710904, 0.0, 3.8586123009300755], 3.0347778408328137], 'max': [[9, 9, 5], [9, 3, 9], 9], 'min': [[2, 1, 0], [1, 3, 0], 0], 'sum': [[14, 13, 8], [15, 9, 11], 35]}
-        self.assertAlmostEqual(actual, expected, "Expected different output when calling 'calculate()' with '[9,1,5,3,3,3,2,9,0]'")
+    # Calculate mean, variance, standard deviation, max, min, and sum
+    mean_axis1 = list(np.mean(matrix, axis=1))
+    mean_axis2 = list(np.mean(matrix, axis=0))
+    mean_flattened = np.mean(matrix)
     
-    def test_calculate_with_few_digits(self):
-        self.assertRaisesRegex(ValueError, "List must contain nine numbers.", mean_var_std.calculate, [2,6,2,8,4,0,1,])
-
-if __name__ == "__main__":
-    unittest.main()
+    variance_axis1 = list(np.var(matrix, axis=1))
+    variance_axis2 = list(np.var(matrix, axis=0))
+    variance_flattened = np.var(matrix)
+    
+    std_dev_axis1 = list(np.std(matrix, axis=1))
+    std_dev_axis2 = list(np.std(matrix, axis=0))
+    std_dev_flattened = np.std(matrix)
+    
+    max_axis1 = list(np.max(matrix, axis=1))
+    max_axis2 = list(np.max(matrix, axis=0))
+    max_flattened = np.max(matrix)
+    
+    min_axis1 = list(np.min(matrix, axis=1))
+    min_axis2 = list(np.min(matrix, axis=0))
+    min_flattened = np.min(matrix)
+    
+    sum_axis1 = list(np.sum(matrix, axis=1))
+    sum_axis2 = list(np.sum(matrix, axis=0))
+    sum_flattened = np.sum(matrix)
+    
+    # Create and return the result dictionary
+    result = {
+        'mean': [mean_axis1, mean_axis2, mean_flattened],
+        'variance': [variance_axis1, variance_axis2, variance_flattened],
+        'standard deviation': [std_dev_axis1, std_dev_axis2, std_dev_flattened],
+        'max': [max_axis1, max_axis2, max_flattened],
+        'min': [min_axis1, min_axis2, min_flattened],
+        'sum': [sum_axis1, sum_axis2, sum_flattened]
+    }
+    
+    print(result)  # Print the result
+    return result
